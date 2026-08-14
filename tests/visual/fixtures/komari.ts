@@ -26,6 +26,7 @@ export interface VisualFixtureOptions {
   expiryThresholds?: boolean
   missingCpuMetricHistory?: boolean
   pingTaskOrdering?: boolean
+  generalCardKeys?: string[]
 }
 
 function uuidFor(index: number): string {
@@ -358,6 +359,12 @@ export async function installKomariFixture(page: Page, options: VisualFixtureOpt
     homeQuickControlsEnabled: true,
     homeQuickControlPreset: '完整',
     homeToolsEnabled: true,
+    generalCardPreset: '自定义',
+    generalCardKeys: (options.generalCardKeys ?? (
+      options.earthRenderer === 'tiled'
+        ? ['onlineNodes', 'remainingValue', 'monthlyCost', 'totalTraffic', 'uploadSpeed', 'downloadSpeed']
+        : ['memory', 'disk', 'remainingValue', 'totalTraffic', 'uploadSpeed', 'downloadSpeed']
+    )).join('\n'),
   }
 
   await page.addInitScript(({ fixedNow }) => {

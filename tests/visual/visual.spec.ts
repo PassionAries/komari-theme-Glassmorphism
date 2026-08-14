@@ -75,6 +75,20 @@ test('home tiled layout desktop', async ({ page }) => {
   await expect(page).toHaveScreenshot('home-tiled-desktop.png', { fullPage: false })
 })
 
+test('home tiled layout respects custom general cards and order', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 720 })
+  await installKomariFixture(page, {
+    earthRenderer: 'tiled',
+    generalCardKeys: ['currentTime', 'offlineNodes'],
+  })
+  await openStablePage(page)
+
+  const cards = page.locator('[data-general-card-key]')
+  await expect(cards).toHaveCount(2)
+  await expect(cards.first()).toHaveAttribute('data-general-card-key', 'currentTime')
+  await expect(cards.nth(1)).toHaveAttribute('data-general-card-key', 'offlineNodes')
+})
+
 test('home mini card metric icons remain accessible', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 })
   await installKomariFixture(page, { nodeCardSize: 'mini', hideEarth: true })
